@@ -1,0 +1,12 @@
+/cros/
+/depot_tools/
+/out/
+/tmp/
+/.cache/
+
+*.bin
+*.img
+*.qcow2
+*.log
+
+.DS_Store
