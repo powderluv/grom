@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="powderluv-github" fetch="https://github.com/powderluv/" />
+
+  <project
+      name="grom-amd64-overlay"
+      path="src/private-overlays/overlay-grom-amd64-private"
+      remote="powderluv-github"
+      revision="main" />
+</manifest>

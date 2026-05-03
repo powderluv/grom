@@ -9,7 +9,7 @@ base system.
 - Source checkout: `~/github/grom/cros`
 - Depot tools: `~/github/grom/depot_tools`
 - Initial board: `grom-amd64`
-- Board overlay: `cros/src/overlays/overlay-grom-amd64`
+- Board overlay: `cros/src/private-overlays/overlay-grom-amd64-private`
 - Base profile: `amd64-generic`
 - Toolchain tuple: `x86_64-cros-linux-gnu`
 - Grom target virtual: `virtual/target-grom-os`
@@ -19,8 +19,8 @@ base system.
 
 - Keep the first board close to `amd64-generic` so ChromiumOS package behavior
   stays predictable.
-- Provide a Grom board overlay with its own BSP virtual, board metadata, model
-  YAML, and release marker.
+- Provide a standalone Grom private board overlay with its own BSP virtual,
+  board metadata, model YAML, and release marker.
 - Validate with `setup_board`, targeted BSP emerges, and `chromeos-config`
   generation before attempting a full image build.
 

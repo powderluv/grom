@@ -9,11 +9,17 @@ configuration metadata above it.
 The full ChromiumOS checkout lives at `cros/` and depot tools live at
 `depot_tools/`. Both directories are intentionally left outside this Git repo.
 
-The active board overlay is in:
+The active board overlay is a standalone private ChromiumOS overlay:
 
 ```text
-cros/src/overlays/overlay-grom-amd64
+cros/src/private-overlays/overlay-grom-amd64-private
 ```
+
+It is intentionally separate from the upstream ChromiumOS `board-overlays`
+repo.
+
+`manifests/grom-local.xml` is the local manifest snippet for checking the
+overlay out into the ChromiumOS tree.
 
 ## Build
 
@@ -21,6 +27,9 @@ From `~/github/grom/cros`:
 
 ```bash
 export PATH="$HOME/github/grom/depot_tools:$PATH"
+
+cros_sdk --working-dir=/mnt/host/source -- \
+  ./chromite/bin/setup_board --board=grom-amd64 --force
 
 cros_sdk --working-dir=/mnt/host/source -- \
   cros build-packages --board=grom-amd64 --jobs=16 --skip-setup-board \

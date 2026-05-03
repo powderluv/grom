@@ -6,14 +6,14 @@
 - ChromiumOS checkout: `~/github/grom/cros`
 - Depot tools: `~/github/grom/depot_tools`
 - Active board: `grom-amd64`
-- Board overlay: `~/github/grom/cros/src/overlays/overlay-grom-amd64`
+- Board overlay: `~/github/grom/cros/src/private-overlays/overlay-grom-amd64-private`
 - Base profile: `amd64-generic`
 - Toolchain tuple: `x86_64-cros-linux-gnu`
 
 ## Implemented
 
 - Renamed the project to Grom.
-- Added the `overlay-grom-amd64` board overlay.
+- Added the standalone `overlay-grom-amd64-private` board overlay.
 - Added `chromeos-base/grom-config`, installing `/etc/grom-release`.
 - Added `chromeos-base/grom-bsp`; `grom-bsp-0.0.1-r1` now installs the board
   Omaha/app ID metadata via the ChromiumOS `appid` eclass.
@@ -38,7 +38,7 @@ export PATH="$HOME/github/grom/depot_tools:$PATH"
 Completed successfully:
 
 ```bash
-cros lint overlay-grom-amd64
+cros lint src/private-overlays/overlay-grom-amd64-private
 cros_sdk --working-dir=/mnt/host/source -- ./chromite/bin/setup_board --board=grom-amd64 --force
 cros_sdk --working-dir=/mnt/host/source -- emerge-grom-amd64 virtual/chromeos-bsp chromeos-base/chromeos-config-bsp
 cros_sdk --working-dir=/mnt/host/source -- emerge-grom-amd64 --nodeps chromeos-base/chromeos-config
@@ -65,9 +65,21 @@ PRETTY_NAME="Grom 0.0.1 amd64"
 
 ## Full Build Progress
 
-- Added a board-local `chromeos-base/crosid-0.0.1-r292::grom-amd64` override so
-  Meson tests run through a `platform2_test.py --strategy=sudo --user=root`
-  wrapper. This cleared the host namespace failure in `/proc/self/setgroups`.
+- Moved the Grom board overlay out of the upstream `src/overlays` repo and
+  into the standalone private board overlay path:
+  `src/private-overlays/overlay-grom-amd64-private`.
+- The private overlay uses `repo-name = grom-amd64-private`, and
+  `cros query boards -f 'name == "grom-amd64"'` reports it as both the private
+  and top-level overlay.
+- `setup_board --board=grom-amd64 --force --skip-toolchain-update` regenerated
+  `/build/grom-amd64` with the private overlay in `BOARD_OVERLAY` and
+  `PORTDIR_OVERLAY`.
+- `emerge-grom-amd64 --nodeps virtual/target-grom-os virtual/target-os`
+  completed from `::grom-amd64-private`.
+- Added a board-local
+  `chromeos-base/crosid-0.0.1-r292::grom-amd64-private` override so Meson tests
+  run through a `platform2_test.py --strategy=sudo --user=root` wrapper. This
+  cleared the host namespace failure in `/proc/self/setgroups`.
 - `cros build-packages --board=grom-amd64 --jobs=16 --skip-setup-board --no-withtest --no-withautotest --no-withfactory`
   completed successfully.
 - The first `cros build-image` run reached DLC generation and failed because
@@ -118,7 +130,8 @@ The VNC server is currently advertising password authentication.
 ```bash
 cd ~/github/grom/cros
 export PATH="$HOME/github/grom/depot_tools:$PATH"
-git -C src/overlays status -sb -- overlay-grom-amd64
+git -C src/private-overlays/overlay-grom-amd64-private status -sb
+./chromite/bin/cros query overlays --board=grom-amd64 -o '{name} {path} {is_private}'
 cros_sdk --working-dir=/mnt/host/source -- qlist-grom-amd64 -ICv chromeos-base/chromeos-config chromeos-base/chromeos-config-bsp chromeos-base/grom-bsp chromeos-base/grom-config chromeos-base/grom-omarchy-config chromeos-base/grom-omarchy-meta virtual/chromeos-bsp virtual/target-grom-os virtual/target-os
 ```
 
