@@ -68,6 +68,8 @@ PRETTY_NAME="Grom 0.0.1 amd64"
 - Moved the Grom board overlay out of the upstream `src/overlays` repo and
   into the standalone private board overlay path:
   `src/private-overlays/overlay-grom-amd64-private`.
+- Standalone overlay repo:
+  `https://github.com/powderluv/grom-amd64-overlay`.
 - The private overlay uses `repo-name = grom-amd64-private`, and
   `cros query boards -f 'name == "grom-amd64"'` reports it as both the private
   and top-level overlay.
