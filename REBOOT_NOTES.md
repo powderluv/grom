@@ -18,7 +18,7 @@ All known Grom repos were clean and pushed when these notes were saved:
 
 ```text
 https://github.com/powderluv/grom
-  main d8714d0 Record standalone overlay repository
+  main contains this reboot-state snapshot
 
 https://github.com/powderluv/grom-amd64-overlay
   main 34287e9 Add standalone Grom amd64 private overlay
