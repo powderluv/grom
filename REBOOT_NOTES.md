@@ -1,5 +1,7 @@
 # Grom Reboot Notes
 
+Last saved: 2026-05-06 22:37:19 PDT.
+
 ## Current State
 
 - Project root: `~/github/grom`
@@ -9,6 +11,25 @@
 - Board overlay: `~/github/grom/cros/src/private-overlays/overlay-grom-amd64-private`
 - Base profile: `amd64-generic`
 - Toolchain tuple: `x86_64-cros-linux-gnu`
+
+## Git State
+
+All known Grom repos were clean and pushed when these notes were saved:
+
+```text
+https://github.com/powderluv/grom
+  main d8714d0 Record standalone overlay repository
+
+https://github.com/powderluv/grom-amd64-overlay
+  main 34287e9 Add standalone Grom amd64 private overlay
+
+https://github.com/powderluv/chromiumos-board-overlays
+  grom-amd64-overlay a8aa71709f5 Remove Grom overlay from board-overlays
+```
+
+`repo status` in `~/github/grom/cros` only reports `src/overlays` on branch
+`grom-amd64-overlay`; the actual Grom board overlay now lives in its own Git
+repo under `src/private-overlays/overlay-grom-amd64-private`.
 
 ## Implemented
 
@@ -98,7 +119,8 @@ Current bootable dev image:
 ~/github/grom/cros/src/build/images/grom-amd64/R149-16665.0.0-d2026_05_03_022827-a1/chromiumos_image.bin
 ```
 
-The image is about 11 GiB. ChromiumOS reported the VM command:
+The current `latest/chromiumos_image.bin` is about 11 GiB. ChromiumOS reported
+the VM command:
 
 ```bash
 cros vm --start --image-path=src/build/images/grom-amd64/R149-16665.0.0-d2026_05_03_022827-a1/chromiumos_image.bin --board=grom-amd64
@@ -121,18 +143,25 @@ VNC: 192.168.1.108:5900
 VNC password: gromtest
 SSH forward: 127.0.0.1:9222
 Overlay disk: ~/github/grom/cros/out/tmp/grom-vm/grom.qcow2
+Overlay disk size at last save: 433 MiB
 Latest screenshot: /tmp/grom-qemu-vnc.png
 ```
 
 `192.168.1.108:5900` was verified locally with an RFB/VNC banner response.
-The VNC server is currently advertising password authentication.
+The VNC server is currently advertising password authentication. A host reboot
+will stop this QEMU process; after reboot, restart it with
+`~/github/grom/tools/run-grom-vm.sh`.
 
 ## Useful Resume Commands
 
 ```bash
+cd ~/github/grom
+git status -sb
+
 cd ~/github/grom/cros
 export PATH="$HOME/github/grom/depot_tools:$PATH"
 git -C src/private-overlays/overlay-grom-amd64-private status -sb
+git -C src/overlays status -sb
 ./chromite/bin/cros query overlays --board=grom-amd64 -o '{name} {path} {is_private}'
 cros_sdk --working-dir=/mnt/host/source -- qlist-grom-amd64 -ICv chromeos-base/chromeos-config chromeos-base/chromeos-config-bsp chromeos-base/grom-bsp chromeos-base/grom-config chromeos-base/grom-omarchy-config chromeos-base/grom-omarchy-meta virtual/chromeos-bsp virtual/target-grom-os virtual/target-os
 ```
